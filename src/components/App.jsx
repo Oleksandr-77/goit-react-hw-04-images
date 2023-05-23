@@ -52,7 +52,7 @@ const App = () => {
     }
   };
 
-  const handleImageClick = largeImageUrl => {
+  const handleImageClick = bigImageUrl => {
     setBigImageUrl(bigImageUrl);
     setIsModalOpen(true);
     };
