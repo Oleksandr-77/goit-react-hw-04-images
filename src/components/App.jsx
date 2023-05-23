@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import Searchbar from './Searchbar/Searchbar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Modal from './Modal/Modal';
@@ -7,78 +7,68 @@ import axios from 'axios';
 import css from './app.module.css';
 import { MagnifyingGlass } from 'react-loader-spinner';
 
-class App extends Component {
-  state = {
-    query: '',
-    page: 1,
-    totalPages: 1,
-    images: [],
-    isLoading: false,
-    isModalOpen: false,
-    largeImageUrl: '',
-  };
+const App = () => {
+  const [query, setQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [images, setImages] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [bigImageUrl, setBigImageUrl] = useState('');
 
-  makeApiCall(query, page) {
-    if (page > this.state.totalPages && page !== 1) {
+  useEffect(() => {
+  const makeApiCall = () => {
+    if (!query) {
       return;
     }
+
     const PER_PAGE = 12;
     const API_KEY = '34903370-8acb58693fc15daed0bd1e114';
     const searchUrl = `https://pixabay.com/api/?q=${encodeURIComponent(
       query
     )}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=${PER_PAGE}`;
 
-    this.setState({ isLoading: true });
+    setIsLoading(true);
     axios.get(searchUrl).then(response => {
       const totalPages = Math.round(response.data.totalHits / PER_PAGE);
-      this.updateState(response.data.hits, totalPages, true);
-      this.setState({ isLoading: false });
+      const loadedImages = response.data.hits;
+      setTotalPages(totalPages);
+      setImages(prevImages => [...prevImages, ...loadedImages]);
+      setIsLoading(false);
     });
-  }
+  };
+  makeApiCall();
+}, [query, page]);
 
-  handleSearch = searchValue => {
+  const handleSearch = searchValue => {
     if (searchValue !== '') {
-      if (searchValue !== this.state.query) {
-        this.setState({ query: searchValue, page: 1, images: [] });
+      if (searchValue !== query) {
+        setQuery(searchValue);
+        setPage(1);
+        setImages([]);
       } else {
-        this.setState({ query: searchValue }, () => {});
+        setQuery(searchValue);
       }
     }
   };
 
-  updateState(images, totalPages, add = false) {
-    if (add) {
-      this.setState({ totalPages, images: [...this.state.images, ...images] });
-    } else {
-      this.setState({ totalPages, images });
-    }
-  }
+  const handleImageClick = largeImageUrl => {
+    setBigImageUrl(bigImageUrl);
+    setIsModalOpen(true);
+    };
 
-  handleImageClick = largeImageUrl => {
-    this.setState({
-      largeImageUrl,
-      isModalOpen: true,
-    });
-  };
-
-  handleModalClickClose = e => {
-    if (e.target.id === 'modal' && this.state.isModalOpen) {
-      this.setState({
-        isModalOpen: false,
-      });
+  const handleModalClickClose = e => {
+    if (e.target.id === 'modal' && isModalOpen) {
+      setIsModalOpen(false);
     }
   };
 
-  handleModalClose = () => {
-    this.setState({
-      isModalOpen: false,
-    });
+  const handleModalClose = () => {
+    setIsModalOpen(false);
   };
 
-  fetchMoreImages = () => {
-    this.setState(prevState => {
-      return { page: prevState.page + 1 };
-    });
+  const fetchMoreImages = () => {
+    setPage(prevPage => prevPage + 1);
   };
 
   getImagesFromUrl(searchUrl) {
