@@ -1,26 +1,23 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
 import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import css from './imageGallery.module.css';
 
 
 // Список карток зображень. Створює DOM-елемент наступної структури.
 
-class ImageGallery extends Component {
-  render() {
-    return (
-      <ul className={css.ImageGallery}>
-        {this.props.images.map(image => (
-          <ImageGalleryItem
-            key={image.id}
-            onImgClick={this.props.onModalOpen}
-            image={image}
-          />
-        ))}
-      </ul>
-    );
-  }
-}
+const ImageGallery = ({ images, onModalOpen }) => {
+  return (
+    <ul className={css.ImageGallery}>
+      {images.map(image => (
+        <ImageGalleryItem
+          key={image.id}
+          onImgClick={onModalOpen}
+          image={image}
+        />
+      ))}
+    </ul>
+  );
+};
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(

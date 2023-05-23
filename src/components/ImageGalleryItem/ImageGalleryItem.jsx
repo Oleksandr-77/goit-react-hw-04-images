@@ -1,26 +1,23 @@
 import PropTypes from 'prop-types';
-import { Component } from 'react';
 import css from './imageGalleryItem.module.css';
 
 // Компонент елемента списку із зображенням. Створює DOM-елемент наступної структури.
 
-class ImageGalleryItem extends Component {
-  render() {
-    return (
-      <li className={css.ImageGalleryItem}>
-        <img
-          className={css.ImageGalleryItemImage}
-          src={this.props.image.webformatURL}
-          alt={this.props.image.tags}
-          data-largeimg={this.props.image.largeImageURL}
-          onClick={e => {
-            this.props.onImgClick(e.target.dataset.largeimg);
-          }}
-        />
-      </li>
-    );
-  }
-}
+const ImageGalleryItem = ({ image, onImgClick }) => {
+  return (
+    <li className={css.ImageGalleryItem}>
+      <img
+        className={css.ImageGalleryItemImage}
+        src={image.webformatURL}
+        alt={image.tags}
+        data-largeimg={image.largeImageURL}
+        onClick={event => {
+          onImgClick(event.target.dataset.largeimg);
+        }}
+      />
+    </li>
+  );
+};
 
 ImageGalleryItem.propTypes = {
   image: PropTypes.shape({
