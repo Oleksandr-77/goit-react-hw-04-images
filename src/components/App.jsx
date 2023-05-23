@@ -71,38 +71,18 @@ const App = () => {
     setPage(prevPage => prevPage + 1);
   };
 
-  getImagesFromUrl(searchUrl) {
-    axios.get(searchUrl).then(response => {
-      const totalPages = Math.round(response.data.totalHits / 12);
-      this.setState({ totalPages, images: response.data.hits });
-    });
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (
-      prevState.query !== this.state.query ||
-      prevState.page !== this.state.page
-    ) {
-      this.makeApiCall(this.state.query, this.state.page);
-    }
-  }
-
-  render() {
     return (
       <div className={css.App}>
-        <Searchbar onSubmit={this.handleSearch} />
-        <ImageGallery
-          images={this.state.images}
-          onModalOpen={this.handleImageClick}
-        />
-        {this.state.isModalOpen && (
+        <Searchbar onSubmit={handleSearch} />
+        <ImageGallery images={images} onModalOpen={handleImageClick} />
+        {isModalOpen && (
           <Modal
-            largeImageUrl={this.state.largeImageUrl}
-            onClose={this.handleModalClose}
-            onClickClose={this.handleModalClickClose}
+            bigImageUrl={bigImageUrl}
+            onClose={handleModalClose}
+            onClickClose={handleModalClickClose}
           />
         )}
-        {this.state.isLoading && (
+        {isLoading && (
           <MagnifyingGlass
             visible={true}
             height="80"
@@ -114,13 +94,12 @@ const App = () => {
             color="#e15b64"
           />
         )}
-        {this.state.totalPages > 1 &&
-          this.state.page < this.state.totalPages && (
-            <Button getMoreImage={this.fetchMoreImages} />
+
+        {totalPages > 1 && page < totalPages && (
+            <Button getMoreImage={fetchMoreImages} />
           )}
       </div>
     );
-  }
-}
+  };
 
 export default App;
