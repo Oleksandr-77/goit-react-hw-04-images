@@ -17,10 +17,10 @@ const App = () => {
   const [bigImageUrl, setBigImageUrl] = useState('');
 
   useEffect(() => {
-  const makeApiCall = () => {
-    if (!query) {
-      return;
-    }
+    const makeApiCall = () => {
+      if (!query) {
+        return;
+      }
 
     const PER_PAGE = 12;
     const API_KEY = '34903370-8acb58693fc15daed0bd1e114';
@@ -40,66 +40,66 @@ const App = () => {
   makeApiCall();
 }, [query, page]);
 
-  const handleSearch = searchValue => {
-    if (searchValue !== '') {
-      if (searchValue !== query) {
-        setQuery(searchValue);
-        setPage(1);
-        setImages([]);
-      } else {
-        setQuery(searchValue);
-      }
+const handleSearch = searchValue => {
+  if (searchValue !== '') {
+    if (searchValue !== query) {
+      setQuery(searchValue);
+      setPage(1);
+      setImages([]);
+    } else {
+      setQuery(searchValue);
     }
-  };
+  }
+};
 
-  const handleImageClick = bigImageUrl => {
-    setBigImageUrl(bigImageUrl);
-    setIsModalOpen(true);
-    };
+const handleImageClick = bigImageUrl => {
+  setBigImageUrl(bigImageUrl);
+  setIsModalOpen(true);
+};
 
-  const handleModalClickClose = e => {
-    if (e.target.id === 'modal' && isModalOpen) {
-      setIsModalOpen(false);
-    }
-  };
-
-  const handleModalClose = () => {
+const handleModalClickClose = event => {
+  if (event.target.id === 'modal' && isModalOpen) {
     setIsModalOpen(false);
-  };
+  }
+};
 
-  const fetchMoreImages = () => {
-    setPage(prevPage => prevPage + 1);
-  };
+const handleModalClose = () => {
+  setIsModalOpen(false);
+};
 
-    return (
-      <div className={css.App}>
-        <Searchbar onSubmit={handleSearch} />
-        <ImageGallery images={images} onModalOpen={handleImageClick} />
-        {isModalOpen && (
-          <Modal
-            bigImageUrl={bigImageUrl}
-            onClose={handleModalClose}
-            onClickClose={handleModalClickClose}
-          />
-        )}
-        {isLoading && (
-          <MagnifyingGlass
-            visible={true}
-            height="80"
-            width="80"
-            ariaLabel="MagnifyingGlass-loading"
-            wrapperStyle={{ margin: '0 auto' }}
-            wrapperClass="MagnifyingGlass-wrapper"
-            glassColor="#c0efff"
-            color="#e15b64"
-          />
-        )}
+const fetchMoreImages = () => {
+  setPage(prevPage => prevPage + 1);
+};
 
-        {totalPages > 1 && page < totalPages && (
-            <Button getMoreImage={fetchMoreImages} />
-          )}
-      </div>
-    );
-  };
+return (
+  <div className={css.App}>
+    <Searchbar onSubmit={handleSearch} />
+    <ImageGallery images={images} onModalOpen={handleImageClick} />
+    {isModalOpen && (
+      <Modal
+        bigImageUrl={bigImageUrl}
+        onClose={handleModalClose}
+        onClickClose={handleModalClickClose}
+      />
+    )}
+    {isLoading && (
+      <MagnifyingGlass
+        visible={true}
+        height="80"
+        width="80"
+        ariaLabel="MagnifyingGlass-loading"
+        wrapperStyle={{ margin: '0 auto' }}
+        wrapperClass="MagnifyingGlass-wrapper"
+        glassColor="#c0efff"
+        color="#e15b64"
+      />
+    )}
+
+    {totalPages > 1 && page < totalPages && (
+      <Button getMoreImage={fetchMoreImages} />
+    )}
+  </div>
+);
+};
 
 export default App;
